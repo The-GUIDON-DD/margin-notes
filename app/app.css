@@ -1,16 +1,106 @@
 @import "tailwindcss";
 
+/*
+ * Brand fonts from the Margin Notes style guide ("Downloaded Fonts" in Figma).
+ * NOTE: these are the free DEMO builds — personal / non-commercial use only.
+ *   Light And Airy: https://justtheskills.com/product/light-and-airy/
+ *   Flapstick:      https://www.pizzadude.dk (Jakob Fischer)
+ * Replace the files in /public/fonts with licensed versions before launch.
+ */
+@font-face {
+  font-family: "Light And Airy";
+  src:
+    local("Light And Airy"),
+    local("LightAndAiry-Regular"),
+    url("/fonts/LightAndAiry.woff") format("woff"),
+    url("/fonts/LightAndAiry.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Flapstick";
+  src:
+    local("Flapstick"),
+    local("Flapstick-Regular"),
+    url("/fonts/Flapstick.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans:
     "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-hand: "Light And Airy", "Just Another Hand", cursive;
+  --font-display: "Flapstick", "Kalam", cursive;
+
+  /* Figma variables */
+  --color-paper: #fcfdf7; /* Main/Background */
+  --color-ink: #272626; /* Neutrals/Black */
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-paper text-ink;
+  color-scheme: light;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
+}
+
+/*
+ * --u is one Figma pixel of the 1440px-wide landing frame.
+ * ≥1024px: the frame scales to fit the viewport width (1:1 at 1440px).
+ * Narrower: it stops shrinking at 0.7–0.625 so text stays legible and the
+ * collage crops at the sides instead.
+ */
+.landing {
+  --u: max(calc(100vw / 1440), min(calc(100vw / 600), 0.7px));
+}
+
+/* Intro: prototype fades the copy from paper colour to ink. */
+@media (prefers-reduced-motion: no-preference) {
+  .ink-in {
+    animation: ink-in 900ms ease-out var(--ink-delay, 200ms) both;
+  }
+}
+
+@keyframes ink-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Collage: doodles appear in the order of the Title variants. */
+.collage[data-reveal="pending"] [data-step] {
+  opacity: 0;
+  scale: 0.94;
+}
+
+.collage[data-reveal="shown"] [data-step] {
+  transition:
+    opacity 600ms ease-out,
+    scale 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.cta-arrow {
+  transition: translate 200ms ease-out;
+}
+
+.cta:hover .cta-arrow,
+.cta:focus-visible .cta-arrow {
+  translate: 4px 0;
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 4px;
+  border-radius: 9999px;
 }
