@@ -77,6 +77,57 @@ body {
   }
 }
 
+/*
+ * Intro copy is handwritten (handwriting.tsx): a pen draws each letter's
+ * centreline strokes in order, then the real glyph outline fades in under the
+ * ink. Stroke paths have pathLength="1". Without motion, only the glyphs show.
+ */
+.hw-fill {
+  fill: currentColor;
+}
+
+.hw-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--pen-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .handwritten .hw-stroke {
+    opacity: 1;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation:
+      hw-pen var(--dur) cubic-bezier(0.45, 0.05, 0.55, 0.95) var(--t0) forwards,
+      hw-lift 160ms ease-out var(--t-end) forwards;
+  }
+
+  .handwritten .hw-fill {
+    animation: hw-ink 160ms ease-out var(--t-end) both;
+  }
+}
+
+@keyframes hw-pen {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes hw-lift {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes hw-ink {
+  from {
+    fill-opacity: 0;
+  }
+}
+
 /* Collage: doodles appear in the order of the Title variants. */
 .collage[data-reveal="pending"] [data-step] {
   opacity: 0;
@@ -90,11 +141,69 @@ body {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-.cta-arrow {
-  transition: translate 200ms ease-out;
+/*
+ * Hover effects (not specified in Figma). Shadow is "Shadow 1" from the
+ * style guide: Y 1, blur 4, #000 at 15%. Mouse/trackpad only.
+ */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* Doodles: pick up off the page with a little springy tilt. */
+  .doodle:hover {
+    z-index: 10;
+  }
+
+  .doodle-hover {
+    transition:
+      scale 350ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      rotate 350ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 250ms ease-out;
+  }
+
+  .doodle:hover .doodle-hover {
+    scale: var(--hover-scale, 1.05);
+    rotate: var(--tilt, 0deg);
+    filter: drop-shadow(0 1px 4px rgb(0 0 0 / 0.15));
+  }
+
+  /* CTA: lifts and tilts like a sticker; arrow nudges forward. */
+  .cta-body {
+    transition:
+      translate 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      rotate 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 200ms ease-out;
+  }
+
+  .cta:hover .cta-body {
+    translate: 0 -3px;
+    rotate: -2deg;
+    filter: drop-shadow(0 1px 4px rgb(0 0 0 / 0.15));
+  }
+
+  .cta:active .cta-body {
+    translate: 0 0;
+    rotate: 0deg;
+    filter: none;
+  }
+
+  .cta-arrow {
+    transition: translate 200ms ease-out;
+  }
+
+  .cta:hover .cta-arrow {
+    translate: 4px 0;
+  }
+
+  /* Scroll cue: arrow bobs downward. */
+  .scroll-cue:hover .scroll-arrow {
+    animation: scroll-bob 900ms ease-in-out infinite;
+  }
 }
 
-.cta:hover .cta-arrow,
+@keyframes scroll-bob {
+  50% {
+    translate: 0 8px;
+  }
+}
+
 .cta:focus-visible .cta-arrow {
   translate: 4px 0;
 }

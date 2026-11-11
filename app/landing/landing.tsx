@@ -1,5 +1,12 @@
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { arrowRight, type Doodle, doodles } from "./doodles";
+import {
+  HandwritingDefs,
+  HandwrittenParagraph,
+  planHandwriting,
+} from "./handwriting";
 
 /** Design pixels → responsive length (see `--u` in app.css). */
 const u = (n: number) => `calc(var(--u) * ${n})`;
@@ -8,7 +15,22 @@ const u = (n: number) => `calc(var(--u) * ${n})`;
 const STEP_MS = 380;
 const FIRST_STEP = 2;
 
+/** Inertial smooth scrolling (wheel + in-page anchors like "Scroll"). */
+function useSmoothScroll() {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const lenis = new Lenis({
+      autoRaf: true,
+      lerp: 0.08,
+      anchors: { duration: 1.6, easing: (t) => 1 - (1 - t) ** 4 },
+    });
+    return () => lenis.destroy();
+  }, []);
+}
+
 export function Landing() {
+  useSmoothScroll();
+
   return (
     <main className="landing overflow-x-clip bg-paper text-ink">
       <Intro />
@@ -26,6 +48,25 @@ const introText: CSSProperties = {
   lineHeight: u(56.45),
 };
 
+/** Intro copy, one entry per Figma text-path line. */
+const INTRO_PT1 = [
+  "somewhere between the formulas and the deadlines, there's always a little drawing. an eye, a",
+  "dragon, your seatmate mid-lecture. nobody asked for it, and it was never meant to be seen.",
+];
+const INTRO_PT2 = [
+  "notebooks get tossed or shoved into drawers, and the margins go with them. here are some we",
+  "found. take a look around, then add one of your own.",
+];
+
+/* One pen writes both paragraphs in order (speed: PEN_SPEED in handwriting.tsx). */
+const INTRO_PLAN = planHandwriting([INTRO_PT1, INTRO_PT2], {
+  startMs: 300,
+  pauseMs: 250,
+});
+
+const fadeInAfterWriting = (extraMs: number) =>
+  ({ "--ink-delay": `${INTRO_PLAN.endMs + extraMs}ms` }) as CSSProperties;
+
 function Intro() {
   return (
     <section
@@ -36,33 +77,26 @@ function Intro() {
         className="flex flex-col"
         style={{ width: `min(${u(805.33)}, 100% - 32px)` }}
       >
-        <p className="ink-in" style={{ ...introText, maxWidth: u(784.23) }}>
-          <span className="md:block md:whitespace-nowrap">
-            somewhere between the formulas and the deadlines, there's always a
-            little drawing. an eye, a
-          </span>{" "}
-          <span className="md:block md:whitespace-nowrap">
-            dragon, your seatmate mid-lecture. nobody asked for it, and it was
-            never meant to be seen.
-          </span>
+        <HandwritingDefs text={[...INTRO_PT1, ...INTRO_PT2].join("")} />
+
+        <p
+          className="handwritten"
+          style={{ ...introText, maxWidth: u(784.23) }}
+        >
+          <HandwrittenParagraph plan={INTRO_PLAN.paragraphs[0]} />
         </p>
 
         <p
-          className="ink-in [--ink-delay:700ms]"
+          className="handwritten"
           style={{ ...introText, marginTop: u(41.18), marginLeft: u(2) }}
         >
-          <span className="md:block md:whitespace-nowrap">
-            notebooks get tossed or shoved into drawers, and the margins go with
-            them. here are some we
-          </span>{" "}
-          <span className="md:block md:whitespace-nowrap">
-            found. take a look around, then add one of your own.
-          </span>
+          <HandwrittenParagraph plan={INTRO_PLAN.paragraphs[1]} />
         </p>
 
         <p
-          className="ink-in relative self-end [--ink-delay:1400ms]"
+          className="ink-in relative self-end"
           style={{
+            ...fadeInAfterWriting(150),
             marginTop: u(22.11),
             marginRight: u(2.62),
             width: u(99.71),
@@ -91,13 +125,18 @@ function Intro() {
 
       <a
         href="#doodles"
-        className="ink-in relative block [--ink-delay:2000ms]"
-        style={{ marginTop: u(155), width: u(58), height: u(101) }}
+        className="scroll-cue ink-in relative block"
+        style={{
+          ...fadeInAfterWriting(650),
+          marginTop: u(155),
+          width: u(58),
+          height: u(101),
+        }}
       >
         <img
           src="/landing/scroll-arrow.svg"
           alt=""
-          className="absolute max-w-none"
+          className="scroll-arrow absolute max-w-none"
           style={{ left: u(19), top: u(-1), width: u(20), height: u(45.7) }}
         />
         <span
@@ -186,8 +225,8 @@ function Collage() {
             Margin Notes
           </h1>
 
-          {doodles.map((d) => (
-            <DoodleImage key={d.id} doodle={d} />
+          {doodles.map((d, i) => (
+            <DoodleImage key={d.id} doodle={d} tilt={i % 2 ? 2.5 : -2.5} />
           ))}
 
           <a
@@ -202,44 +241,48 @@ function Collage() {
               height: u(59),
             }}
           >
-            <img
-              src="/landing/cta-outline.svg"
-              alt=""
-              className="absolute max-w-none"
-              style={{
-                left: u(-1),
-                top: u(-1),
-                width: u(216),
-                height: u(55.51),
-              }}
-            />
-            <span
-              className="absolute flex flex-col justify-center text-center font-hand"
-              style={{
-                top: u(6.86),
-                right: u(50.03),
-                bottom: 0,
-                left: u(29.53),
-                fontSize: u(36),
-                lineHeight: "normal",
-              }}
-            >
-              EXPLORE
+            {/* Hover motion lives on this wrapper so it isn't slowed by the
+                reveal transition delay on the link itself. */}
+            <span className="cta-body absolute inset-0 block">
+              <img
+                src="/landing/cta-outline.svg"
+                alt=""
+                className="absolute max-w-none"
+                style={{
+                  left: u(-1),
+                  top: u(-1),
+                  width: u(216),
+                  height: u(55.51),
+                }}
+              />
+              <span
+                className="absolute flex flex-col justify-center text-center font-hand"
+                style={{
+                  top: u(6.86),
+                  right: u(50.03),
+                  bottom: 0,
+                  left: u(29.53),
+                  fontSize: u(36),
+                  lineHeight: "normal",
+                }}
+              >
+                EXPLORE
+              </span>
+              <img
+                src="/landing/cta-arrow.svg"
+                alt=""
+                className="cta-arrow absolute max-w-none"
+                style={{
+                  left: u(166.81),
+                  top: u(21.65),
+                  width: u(16.99),
+                  height: u(15.77),
+                }}
+              />
             </span>
-            <img
-              src="/landing/cta-arrow.svg"
-              alt=""
-              className="cta-arrow absolute max-w-none"
-              style={{
-                left: u(166.81),
-                top: u(21.65),
-                width: u(16.99),
-                height: u(15.77),
-              }}
-            />
           </a>
 
-          <DoodleImage doodle={arrowRight} />
+          <DoodleImage doodle={arrowRight} tilt={-6} />
         </div>
       </div>
     </section>
@@ -282,7 +325,15 @@ function GridPaper() {
   );
 }
 
-function DoodleImage({ doodle: d }: { doodle: Doodle }) {
+/** Doodles smaller than this (in design px²) get a bigger hover pop. */
+const SMALL_DOODLE_AREA = 40_000;
+
+function DoodleImage({ doodle: d, tilt }: { doodle: Doodle; tilt: number }) {
+  const hoverStyle = {
+    "--tilt": `${tilt}deg`,
+    "--hover-scale": d.w * d.h < SMALL_DOODLE_AREA ? 1.15 : 1.03,
+  } as CSSProperties;
+
   const img = d.crop ? (
     <div className="absolute inset-0 overflow-hidden">
       <img
@@ -312,7 +363,7 @@ function DoodleImage({ doodle: d }: { doodle: Doodle }) {
   return (
     <div
       data-step
-      className="pointer-events-none absolute"
+      className="doodle absolute"
       style={{
         ...stepDelay(d.step),
         left: u(d.x),
@@ -321,28 +372,30 @@ function DoodleImage({ doodle: d }: { doodle: Doodle }) {
         height: u(d.h),
       }}
     >
-      {d.inner ? (
-        <div className="absolute inset-0 flex items-center justify-center">
+      <div className="doodle-hover absolute inset-0" style={hoverStyle}>
+        {d.inner ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className="relative flex-none"
+              style={{
+                width: u(d.inner.w),
+                height: u(d.inner.h),
+                transform: d.inner.transform,
+                opacity: d.opacity,
+              }}
+            >
+              {img}
+            </div>
+          </div>
+        ) : (
           <div
-            className="relative flex-none"
-            style={{
-              width: u(d.inner.w),
-              height: u(d.inner.h),
-              transform: d.inner.transform,
-              opacity: d.opacity,
-            }}
+            className="relative size-full"
+            style={{ transform: d.transform, opacity: d.opacity }}
           >
             {img}
           </div>
-        </div>
-      ) : (
-        <div
-          className="relative size-full"
-          style={{ transform: d.transform, opacity: d.opacity }}
-        >
-          {img}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
