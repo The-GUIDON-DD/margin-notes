@@ -2,6 +2,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "margin-notes",
   "main": "./workers/app.ts",
-  "compatibility_date": "2026-11-14",
-  "previews": {}
+  "compatibility_date": "2026-10-12",
+  "observability": {
+    "enabled": true
+  }
 }
