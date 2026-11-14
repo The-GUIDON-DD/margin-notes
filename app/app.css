@@ -1,18 +1,13 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   --grid-line-color: rgba(189, 193, 205, 0.35);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --grid-line-color: rgba(75, 85, 99, 0.35);
-  }
 }
 
 html,
 body {
   min-height: 100%;
   overscroll-behavior-y: none;
-  @apply bg-[#FCFDF7] dark:bg-gray-950;
+  @apply bg-[#FCFDF7];
 }

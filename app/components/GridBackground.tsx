@@ -9,11 +9,11 @@ export function GridBackground({ children }: GridBackgroundProps) {
 
   return (
     <div
-      className="min-h-screen w-full bg-[#FCFDF7] dark:bg-gray-950"
+      className="min-h-screen w-full"
       style={{
         backgroundImage: `
-          linear-gradient(to right, var(--grid-line-color, rgba(189, 193, 205, 0.35)) 1px, transparent 1px),
-          linear-gradient(to bottom, var(--grid-line-color, rgba(189, 193, 205, 0.35)) 1px, transparent 1px)
+          linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px)
         `,
         backgroundSize: `${gridSize} ${gridSize}`,
       }}
