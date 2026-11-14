@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
   --grid-line-color: rgba(189, 193, 205, 0.35);
 }
 
