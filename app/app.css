@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+/*
+ * Brand fonts from the Margin Notes style guide (same as feat/landing-page).
+ * NOTE: these are the free DEMO builds — personal / non-commercial use only.
+ * Replace the files in /public/fonts with licensed versions before launch.
+ */
+@font-face {
+  font-family: "Light And Airy";
+  src:
+    local("Light And Airy"),
+    local("LightAndAiry-Regular"),
+    url("/fonts/LightAndAiry.woff") format("woff"),
+    url("/fonts/LightAndAiry.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Flapstick";
+  src:
+    local("Flapstick"),
+    local("Flapstick-Regular"),
+    url("/fonts/Flapstick.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-hand: "Light And Airy", "Just Another Hand", cursive;
+  --font-display: "Flapstick", "Kalam", cursive;
+  --color-ink: #272626;
+}
+
 :root {
   --grid-line-color: rgba(189, 193, 205, 0.35);
 }
@@ -8,5 +42,5 @@ html,
 body {
   min-height: 100%;
   overscroll-behavior-y: none;
-  @apply bg-[#FCFDF7];
+  @apply bg-[#FCFDF7] text-ink;
 }
