@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+/*
+ * Brand fonts from the Margin Notes style guide (same as feat/landing-page).
+ * NOTE: these are the free DEMO builds — personal / non-commercial use only.
+ * Replace the files in /public/fonts with licensed versions before launch.
+ */
+@font-face {
+  font-family: "Light And Airy";
+  src:
+    local("Light And Airy"),
+    local("LightAndAiry-Regular"),
+    url("/fonts/LightAndAiry.woff") format("woff"),
+    url("/fonts/LightAndAiry.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Flapstick";
+  src:
+    local("Flapstick"),
+    local("Flapstick-Regular"),
+    url("/fonts/Flapstick.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-hand: "Light And Airy", "Just Another Hand", cursive;
+  --font-display: "Flapstick", "Kalam", cursive;
+  --color-ink: #272626;
+}
+
 :root {
   --grid-line-color: rgba(189, 193, 205, 0.35);
 }
@@ -8,5 +42,85 @@ html,
 body {
   min-height: 100%;
   overscroll-behavior-y: none;
-  @apply bg-[#FCFDF7];
+  @apply bg-[#FCFDF7] text-ink;
+}
+
+/* ---------- Gallery category bubbles ---------- */
+
+.bubble {
+  rotate: var(--tilt, 0deg);
+  transition:
+    translate 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 300ms ease-out;
+  will-change: translate, rotate, scale;
+}
+
+.bubble-shape {
+  d: var(--d-rest);
+  fill: #fff;
+  stroke: var(--color-ink);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  transition:
+    d 500ms cubic-bezier(0.45, 0, 0.2, 1),
+    fill 250ms ease-out;
+}
+
+.bubble:hover,
+.bubble:focus-visible {
+  translate: 0 -4px;
+  rotate: var(--tilt-hover, -2deg);
+  scale: 1.05;
+  filter: drop-shadow(0 6px 10px rgb(39 38 38 / 0.12));
+}
+
+.bubble:hover .bubble-shape,
+.bubble:focus-visible .bubble-shape {
+  d: var(--d-hover);
+  fill: #fdf2c0;
+}
+
+.bubble:active {
+  translate: 0 -1px;
+  scale: 0.98;
+  transition-duration: 120ms;
+}
+
+.bubble:focus-visible {
+  outline: none;
+}
+
+.bubble:focus-visible .bubble-shape {
+  stroke-width: 2.5px;
+}
+
+/* Staggered entrance. */
+@media (prefers-reduced-motion: no-preference) {
+  .bubble-in {
+    animation: bubble-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 45ms + 80ms);
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble,
+  .bubble-shape {
+    transition-duration: 1ms;
+  }
+
+  .bubble:hover,
+  .bubble:focus-visible {
+    translate: none;
+    rotate: var(--tilt, 0deg);
+    scale: none;
+  }
 }
