@@ -4,25 +4,19 @@ import type { Corner, Doodle } from "./doodles";
 /**
  * Note card (Figma: Artist Archive cards, Default + Variant2).
  *
- * Default: a cropped notebook-page photo. Hover / focus (Variant2): the photo
- * grows outward by the card's own zoom insets, a dark band fades in on one
- * edge and the artist credit appears in that corner.
+ * Default: a cropped notebook-page photo. Hover / focus (Variant2): a dark
+ * band fades in on one edge and the artist credit appears in that corner.
+ * (Figma's Variant2 also zooms the photo; that was dropped by request.)
  *
  * The card fills its parent, so the gallery grid decides its size. Caption
  * text is sized in --card-u units (one design px), set by the grid.
  */
 export function NoteCard({ doodle }: { doodle: Doodle }) {
-  const { crop, zoom, caption } = doodle;
-  const [top, right, bottom, left] = zoom;
+  const { crop, caption } = doodle;
   const isTop = caption.corner.startsWith("t");
   const isRight = caption.corner.endsWith("r");
 
   const style = {
-    // Hover zoom: the same box as Figma's outward insets, as a transform.
-    "--zoom-x": `${(right - left) / 2}%`,
-    "--zoom-y": `${(bottom - top) / 2}%`,
-    "--zoom-sx": 1 + (left + right) / 100,
-    "--zoom-sy": 1 + (top + bottom) / 100,
     "--band-height": `${caption.band}%`,
     "--band-opacity": caption.bandOpacity,
     "--band-angle": `${bandAngle(caption.corner, caption.angle)}deg`,

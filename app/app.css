@@ -437,23 +437,12 @@ body {
   opacity: 1;
 }
 
-.note-card:hover .note-card__photo,
-.note-card:focus-visible .note-card__photo,
-.note-card:focus .note-card__photo {
-  transform: translate(var(--zoom-x), var(--zoom-y))
-    scale(var(--zoom-sx), var(--zoom-sy));
-}
-
 .note-card:focus-visible {
   outline: 2px solid var(--color-ink);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .note-card__photo {
-    transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
   .note-card__band,
   .note-card__credit {
     transition: opacity 300ms ease-out;

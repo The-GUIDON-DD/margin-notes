@@ -5,8 +5,6 @@
  * Geometry notes (all from Figma):
  *  - crop:    where the photo sits inside the card, as % of the card
  *             (a Figma image-fill crop). "cover" = object-fit: cover.
- *  - zoom:    on hover the photo box grows outward by these % per side
- *             [top, right, bottom, left].
  *  - caption: the artist credit's corner, the dark band's height (% of the
  *             card), band opacity, text tone, and the gradient's base angle.
  */
@@ -27,7 +25,6 @@ export type Doodle = {
   /** Width / height of the card component in Figma. */
   aspect: number;
   crop: Crop;
-  zoom: [top: number, right: number, bottom: number, left: number];
   caption: {
     corner: Corner;
     /** Band height as % of the card height. */
@@ -58,14 +55,13 @@ export const SUBJECTS = {
 } as const;
 export type SubjectSlug = keyof typeof SUBJECTS;
 
-const img = (name: string) => `/doodles/${name}.png`;
+const img = (name: string) => `/doodles/${name}.webp`;
 const crop = (left: number, top: number, width: number, height: number) => ({
   left,
   top,
   width,
   height,
 });
-const even = (y: number, x: number): Doodle["zoom"] => [y, x, y, x];
 
 const INGRID = "INGRID ONG";
 const ONGTAO = "S ONGTAO";
@@ -83,7 +79,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-favorites"),
     aspect: 294 / 511,
     crop: crop(0, 0, 200.51, 199.8),
-    zoom: even(8.41, 8.5),
     caption: {
       corner: "br",
       band: 17.61,
@@ -100,7 +95,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-first-year"),
     aspect: 294 / 511,
     crop: crop(0, 0, 200.51, 200.68),
-    zoom: even(4.7, 4.76),
     caption: {
       corner: "tl",
       band: 17.61,
@@ -117,7 +111,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-favorites"),
     aspect: 295.16 / 511,
     crop: crop(-0.09, -100.71, 200.51, 200.59),
-    zoom: even(7.05, 7.09),
     caption: {
       corner: "tl",
       band: 17.61,
@@ -134,7 +127,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-first-year"),
     aspect: 294 / 511,
     crop: crop(-100.54, -100.4, 200.51, 200.68),
-    zoom: even(9.59, 9.52),
     caption: {
       corner: "br",
       band: 17.61,
@@ -151,7 +143,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-filipino"),
     aspect: 630 / 1013,
     crop: crop(-0.03, -1.36, 100.06, 101.36),
-    zoom: [10.86, 7.78, 3.95, 7.14],
     caption: {
       corner: "bl",
       band: 8.88,
@@ -168,7 +159,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-calculus"),
     aspect: 640 / 459,
     crop: crop(-12.38, -202.65, 124.76, 302.65),
-    zoom: even(4.36, 4.38),
     caption: {
       corner: "bl",
       band: 19.61,
@@ -185,7 +175,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-favorites"),
     aspect: 306 / 532,
     crop: crop(-100.58, 0, 200.51, 199.8),
-    zoom: even(8.27, 8.17),
     caption: {
       corner: "br",
       band: 16.92,
@@ -202,7 +191,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-favorites"),
     aspect: 306 / 532,
     crop: crop(-100.5, -99.73, 200.51, 199.8),
-    zoom: even(7.52, 7.52),
     caption: {
       corner: "tr",
       band: 16.92,
@@ -219,7 +207,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-theology"),
     aspect: 344 / 569,
     crop: crop(-11.91, 0.09, 123.6, 100),
-    zoom: even(10.02, 10.17),
     caption: {
       corner: "tr",
       band: 15.82,
@@ -236,7 +223,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-calculus"),
     aspect: 461 / 273,
     crop: crop(-2.13, 0, 104.34, 306.27),
-    zoom: even(4.03, 3.9),
     caption: {
       corner: "br",
       band: 32.97,
@@ -253,7 +239,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("io-calculus"),
     aspect: 461 / 273,
     crop: crop(-4.36, -103.17, 104.34, 306.27),
-    zoom: even(4.4, 4.56),
     caption: {
       corner: "tl",
       band: 32.97,
@@ -270,7 +255,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("so-tree"),
     aspect: 415 / 584,
     crop: "cover",
-    zoom: [11.99, 8.19, 4.62, 8.19],
     caption: {
       corner: "tl",
       band: 20.55,
@@ -287,7 +271,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("so-marker-bleed"),
     aspect: 407 / 584,
     crop: "cover",
-    zoom: [6.51, 5.16, 3.94, 5.16],
     caption: {
       corner: "bl",
       band: 20.55,
@@ -304,7 +287,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("so-individualism"),
     aspect: 489 / 685,
     crop: crop(-2.75, 0, 105.73, 100),
-    zoom: even(3.65, 3.68),
     caption: {
       corner: "br",
       band: 17.52,
@@ -321,7 +303,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("so-whiteflower"),
     aspect: 385 / 569,
     crop: "cover",
-    zoom: [3.87, 3.38, 4.92, 4.94],
     caption: {
       corner: "tr",
       band: 21.09,
@@ -338,7 +319,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-socsci"),
     aspect: 303 / 687,
     crop: crop(0, -44.76, 181.01, 144.76),
-    zoom: even(3.93, 3.96),
     caption: {
       corner: "bl",
       band: 17.47,
@@ -355,7 +335,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-stats-portrait"),
     aspect: 302 / 452,
     crop: crop(-6.3, -2.94, 106.3, 102.98),
-    zoom: [0, 21.85, 21.68, 0],
     caption: {
       corner: "bl",
       band: 26.55,
@@ -372,7 +351,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-stats-figures"),
     aspect: 637 / 655,
     crop: crop(-0.02, -1.85, 104.18, 101.85),
-    zoom: [9.47, 6.91, 4.43, 6.91],
     caption: {
       corner: "br",
       band: 18.32,
@@ -389,7 +367,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-image-of-god"),
     aspect: 629 / 927,
     crop: "cover",
-    zoom: [7.55, 4.61, 7.55, 10.49],
     caption: {
       corner: "br",
       band: 12.94,
@@ -406,7 +383,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-stats-sketch"),
     aspect: 629 / 664,
     crop: crop(-17.94, -24.85, 122.23, 154.51),
-    zoom: [13.25, 13.35, 0, 0],
     caption: {
       corner: "br",
       band: 13.55,
@@ -423,7 +399,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-stats-group"),
     aspect: 629 / 439,
     crop: crop(0, -3.6, 103.8, 103.64),
-    zoom: [4.33, 9.54, 9.57, 4.29],
     caption: {
       corner: "bl",
       band: 27.56,
@@ -440,7 +415,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-calligraphy-1"),
     aspect: 652 / 478,
     crop: crop(-2.72, -0.84, 104.51, 100.84),
-    zoom: [2.51, 1.07, 2.51, 3.83],
     caption: {
       corner: "tr",
       band: 25.1,
@@ -457,7 +431,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ja-calligraphy-2"),
     aspect: 572 / 478,
     crop: crop(-0.05, -2.14, 100.09, 102.14),
-    zoom: [2.51, 4.9, 2.51, 0],
     caption: {
       corner: "br",
       band: 25.1,
@@ -474,7 +447,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("jm-socsci"),
     aspect: 437 / 685,
     crop: "cover",
-    zoom: even(2.34, 2.29),
     caption: {
       corner: "bl",
       band: 17.52,
@@ -491,7 +463,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("jm-history"),
     aspect: 637 / 784,
     crop: crop(0, -1.58, 100, 103.29),
-    zoom: [7.91, 3.92, 0, 3.92],
     caption: {
       corner: "br",
       band: 15.3,
@@ -508,7 +479,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ec-calculus"),
     aspect: 637 / 301,
     crop: crop(-22.89, -0.03, 122.89, 146.54),
-    zoom: [7.64, 5.34, 5.32, 7.69],
     caption: {
       corner: "bl",
       band: 39.87,
@@ -526,7 +496,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ls-dlq"),
     aspect: 403 / 584,
     crop: crop(0, -1.44, 100, 101.49),
-    zoom: even(7.88, 7.69),
     caption: {
       corner: "tr",
       band: 20.55,
@@ -543,7 +512,6 @@ export const DOODLES: Record<string, Doodle> = {
     src: img("ls-web-design"),
     aspect: 310 / 452,
     crop: crop(-5.81, -0.08, 105.81, 100.15),
-    zoom: [0, 0, 11.73, 11.61],
     caption: {
       corner: "tl",
       band: 26.55,
